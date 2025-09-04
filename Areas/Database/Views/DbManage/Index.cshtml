@@ -1,0 +1,164 @@
+@using Microsoft.EntityFrameworkCore
+@using System.Data
+
+@inject AppDbContext dbContext
+
+@{
+  ViewData["Title"] = "DB Info";
+  var connect = dbContext.Database.GetDbConnection();
+  var canConnect = dbContext.Database.CanConnect();
+}
+
+<partial name="_AlertMessage" />
+
+<div class="container py-4">
+
+  <h1 class="text-center text-primary fw-bold mb-4">
+    <i class="bi bi-database-fill"></i> Database Information
+  </h1>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h4 class="card-title text-danger text-uppercase mb-3">
+        Database: @connect.Database
+      </h4>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Connection string:</strong> <code>@connect.ConnectionString</code></li>
+        <li class="list-group-item"><strong>Data source:</strong> @connect.DataSource</li>
+        <li class="list-group-item"><strong>Connection state:</strong>
+          <span class="badge bg-@(connect.State == ConnectionState.Open ? "success" : "secondary")">
+            @connect.State
+          </span>
+        </li>
+        <li class="list-group-item"><strong>Can connect:</strong>
+          <span class="badge bg-@(canConnect ? "success" : "danger")">
+            @(canConnect ? "YES" : "NO")
+          </span>
+        </li>
+        <li class="list-group-item"><strong>Provider:</strong> @dbContext.Database.ProviderName</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light fw-bold">
+      <i class="bi bi-code-slash"></i> Migrations
+    </div>
+    <div class="card-body">
+      @if (!dbContext.Database.GetAppliedMigrations().Any() && !dbContext.Database.GetPendingMigrations().Any())
+      {
+        <div class="alert alert-info mb-0">⚡ Không có migration nào</div>
+      }
+      else
+      {
+        <ul class="list-group">
+          @foreach (var migration in dbContext.Database.GetAppliedMigrations())
+          {
+            <li class="list-group-item text-success">
+              ✅ @migration
+            </li>
+          }
+          @foreach (var migration in dbContext.Database.GetPendingMigrations())
+          {
+            <li class="list-group-item text-warning fw-bold">
+              ⏳ @migration (Pending)
+            </li>
+          }
+        </ul>
+      }
+
+      @if (dbContext.Database.GetPendingMigrations().Any())
+      {
+        <form method="post" class="mt-3" asp-action="Migrate">
+          <button class="btn btn-warning">
+            <i class="bi bi-hammer"></i> Apply Migrations
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+
+  @if (!canConnect)
+  {
+    <div class="alert alert-danger">
+      ❌ Không thể kết nối đến database.<br />
+      Vui lòng kiểm tra lại <code>appsettings.json</code>.
+    </div>
+  }
+
+  @if (canConnect)
+  {
+
+    connect.Open();
+    var tables = connect.GetSchema("Tables");
+    connect.Close();
+
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-light fw-bold">
+        <i class="bi bi-table"></i> Tables in database
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-hover table-striped mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>Table Catalog</th>
+              <th>Table Schema</th>
+              <th>Table Name</th>
+              <th>Table Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (DataRow row in tables.Rows)
+            {
+              <tr>
+                <td>@row["TABLE_CATALOG"]</td>
+                <td>@row["TABLE_SCHEMA"]</td>
+                <td class="fw-bold">@row["TABLE_NAME"]</td>
+                <td>
+                  <span class="badge bg-info">@row["TABLE_TYPE"]</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="text-end mt-3">
+      <!-- Nút mở modal -->
+      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDbModal">
+        <i class="bi bi-trash"></i> Delete Db : @connect.Database
+      </button>
+    </div>
+
+    <!-- Modal xác nhận -->
+    <div class="modal fade" id="deleteDbModal" tabindex="-1" aria-labelledby="deleteDbModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="deleteDbModalLabel">
+              <i class="bi bi-exclamation-triangle-fill"></i> Confirm Delete
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Bạn có chắc chắn muốn <strong>xóa toàn bộ database</strong>
+            <span class="text-danger">[@connect.Database]</span> không?
+            <br />⚠️ Hành động này không thể hoàn tác!
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+            <!-- Form DeleteDbAsync -->
+            <form method="post" asp-action="DeleteDb" class="d-inline">
+              <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash-fill"></i> Confirm Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,11 +1,21 @@
+using System.Configuration;
 using System.Net;
 using App.ExtendMethods;
+using App.Models;
 using App.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing.Constraints;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// cấu hình EF
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    string connectionString = builder.Configuration.GetConnectionString("AppMvcConnectionString");
+    options.UseSqlServer(connectionString);
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
