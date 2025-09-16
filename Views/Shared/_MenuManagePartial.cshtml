@@ -4,19 +4,13 @@
     Manage
   </a>
 
-  <div class="dropdown-menu" aria-labelledby="managedropdownmenu">
+  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="managedropdownmenu">
     <a class="dropdown-item" asp-area="Database" asp-controller="DbManage" asp-action="Index">
-      <i class="bi bi-database-fill"></i> Database
+      Database
     </a>
-    @* <a class="dropdown-item" asp-area="Database" asp-controller="DbBackup" asp-action="Index">
-      <i class="bi bi-backup"></i> Backup
+
+    <a class="dropdown-item" asp-area="Contact" asp-controller="Contact" asp-action="Index">
+      Quản lý liên hệ
     </a>
-    <a class="dropdown-item" asp-area="Database" asp-controller="DbRestore" asp-action="Index">
-      <i class="bi bi-arrow-counterclockwise"></i> Restore
-    </a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item text-danger" asp-area="" asp-controller="Home" asp-action="Index">
-      <i class="bi bi-house-fill"></i> Home
-    </a> *@
   </div>
 </div>

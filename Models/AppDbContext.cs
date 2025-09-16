@@ -1,5 +1,7 @@
+using App.Models.Contacts;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace App.Models
 {
@@ -31,6 +33,6 @@ namespace App.Models
     }
 
 
-
+    public DbSet<Contact> Contacts { get; set; }
   }
 }

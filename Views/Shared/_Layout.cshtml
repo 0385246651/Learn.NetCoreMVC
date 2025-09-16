@@ -20,8 +20,8 @@
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
@@ -29,18 +29,31 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home"
                                 asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item"></li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Planet" asp-action="Index">Planets</a>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Planet"
+                                asp-action="Index">Planets</a>
                         </li>
 
-                        <li class="nav-item"></li>
-                        <a class="nav-link text-dark" asp-area="Database" asp-controller="DbManage" asp-action="Index">
-                            Database
-                        </a>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Database" asp-controller="DbManage"
+                                asp-action="Index">
+                                Database
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Contact" asp-controller="Contact"
+                                asp-action="SendContact">
+                                Liên hệ
+                            </a>
                         </li>
                     </ul>
 
-                    <partial name="_MenuManagePartial" />
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <partial name="_MenuManagePartial" />
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>

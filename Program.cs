@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.AddControllersWithViews();
 
 // Thêm dịch vụ cho Razor Pages (nếu anh định dùng Razor Pages)
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AppDnContext") ?? throw new InvalidOperationException("Connection string 'AppDnContext' not found.")));
 
 // Cấu hình để tìm view trong thư mục MyView
 builder.Services.Configure<RazorViewEngineOptions>(options =>
