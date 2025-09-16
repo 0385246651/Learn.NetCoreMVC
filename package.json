@@ -1,0 +1,35 @@
+{
+  "name": "mvc.net",
+  "version": "1.0.0",
+  "description": "learn Net Core MVC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0385246651/Learn.NetCoreMVC.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0385246651/Learn.NetCoreMVC/issues"
+  },
+  "homepage": "https://github.com/0385246651/Learn.NetCoreMVC#readme",
+  "dependencies": {
+    "gulp": "^5.0.1",
+    "gulp-less": "^5.0.0",
+    "gulp-rename": "^2.1.0",
+    "gulp-uglify": "^3.0.2",
+    "rimraf": "^6.0.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-postcss": "^10.0.0",
+    "gulp-sass": "^6.0.1",
+    "postcss": "^8.5.6",
+    "sass": "^1.92.1"
+  }
+}

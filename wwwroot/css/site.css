@@ -7,7 +7,6 @@ html {
     font-size: 16px;
   }
 }
-
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -21,11 +20,64 @@ body {
   margin-bottom: 60px;
 }
 
+.form-floating > .form-control-plaintext::-moz-placeholder, .form-floating > .form-control::-moz-placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;
 }
 
+.form-floating > .form-control-plaintext:focus::-moz-placeholder, .form-floating > .form-control:focus::-moz-placeholder {
+  text-align: start;
+}
+
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+.app-navbar {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.app-navbar .text-dark {
+  color: #b9c3ce !important;
+}
+.app-navbar .text-dark:hover {
+  color: white !important;
+}
+.app-navbar .navbar-brand {
+  color: #a57dea !important;
+}
+.app-navbar .navbar-brand:hover {
+  color: #d727da !important;
+}
+.app-navbar .dropdown-toggle {
+  border-color: #a562ad;
+  color: #ae84b3 !important;
+}
+
+.contact-firstcol {
+  background-color: #9854a0;
+  color: white;
+  text-align: center;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+.contact-firstcol h4 {
+  line-height: 40px;
+  font-weight: 400;
+  margin-top: 20px;
+}
+.contact-firstcol img {
+  max-width: 100px;
+}
+
+.formcontact label {
+  font-weight: 700 !important;
+}
+.formcontact .btn-primary {
+  background-color: #9854a0 !important;
+  border-color: #9854a0;
 }

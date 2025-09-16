@@ -1,0 +1,22 @@
+//navbar
+.app-navbar  {
+  background-color: rgba(0, 0, 0, 0.8);
+  //đè css của class text-dark
+  .text-dark {
+    color: #b9c3ce !important;
+    &:hover {
+      color: white !important;
+    }
+  }
+  .navbar-brand{
+    color: #a57dea !important;
+    &:hover {
+      color: #d727da !important;
+    }
+  }
+
+  .dropdown-toggle{
+    border-color: #a562ad;
+    color: #ae84b3 !important;
+  }
+}

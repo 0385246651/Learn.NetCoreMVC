@@ -35,3 +35,10 @@ options.ViewLocationFormats.Add("/MyView/{1}/{0}" + RazorViewEngine.ViewExtensio
 ```
 dotnet aspnet-codegenerator area Product
 ```
+
+##gen scss tỏng thư mục assets thành css troing thư mục se
+wwwroot/css (sẽ tự đông thay đổi khi save file scss) - có thể áp dụng cho sass
+
+```
+gulp
+```
