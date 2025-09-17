@@ -1,0 +1,26 @@
+﻿@model DisplayRecoveryCodesViewModel
+@{
+    ViewData["Title"] = "Mã phục hồi";
+}
+
+<h1><i class="fa fa-shield-alt text-primary"></i> @ViewData["Title"]</h1>
+<p class="text-success">@ViewData["StatusMessage"]</p>
+
+<div class="card shadow-sm mt-3">
+    <div class="card-body">
+        <h4 class="card-title">Đây là các mã phục hồi của bạn</h4>
+        <p class="card-text text-muted">
+            Hãy lưu trữ các mã này để sử dụng khi đăng nhập cần xác thực hai yếu tố.
+        </p>
+        <hr />
+
+        <ul class="list-group list-group-flush">
+            @foreach (var code in Model.Codes)
+            {
+                <li class="list-group-item">
+                    <i class="fa fa-key text-secondary"></i> <strong>@code</strong>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

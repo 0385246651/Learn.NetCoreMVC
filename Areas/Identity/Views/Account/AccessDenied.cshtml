@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Hạn chế truy cập";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="bi bi-shield-lock-fill text-danger" style="font-size: 4rem;"></i>
+                    </div>
+                    <h1 class="text-danger mb-3">@ViewData["Title"]</h1>
+                    <div class="alert alert-danger" role="alert">
+                        Bạn không được phép truy cập chức năng này.
+                    </div>
+                    <a href="/" class="btn btn-outline-danger mt-3">
+                        <i class="fa-solid fa-arrow-left"></i> Quay về Trang chủ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

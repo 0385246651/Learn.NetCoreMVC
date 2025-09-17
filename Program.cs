@@ -1,5 +1,6 @@
 using System.Configuration;
 using System.Net;
+using App.Data;
 using App.ExtendMethods;
 using App.Models;
 using App.Services;
@@ -104,6 +105,25 @@ builder.Services.AddAuthentication()
         // .AddMicrosoftAccount()
         ;
 
+// Cấu hình dịch vụ gửi email
+// Đọc cấu hình từ appsettings.json
+builder.Services.AddOptions();
+var mailsetting = builder.Configuration.GetSection("MailSettings");
+builder.Services.Configure<MailSettings>(mailsetting);
+builder.Services.AddSingleton<IEmailSender, SendMailService>();
+
+// 
+builder.Services.AddSingleton<IdentityErrorDescriber, AppIdentityErrorDescriber>();
+
+//
+builder.Services.AddAuthorization(option =>
+{
+    option.AddPolicy("ViewManageMenu", b =>
+    {
+        b.RequireAuthenticatedUser();
+        b.RequireRole(RoleName.Administrator);
+    });
+});
 
 //cấu hình services
 // services.AddSingleton<ProductService>();

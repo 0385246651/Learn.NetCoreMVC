@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Lỗi xác thực email";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-danger">
+                <div class="card-body text-center">
+                    <!-- Icon lỗi -->
+                    <i class="fa-solid fa-circle-xmark fa-4x text-danger mb-4"></i>
+
+                    <h1 class="text-danger">@ViewData["Title"]</h1>
+                    <p class="lead">Có lỗi khi xác thực địa chỉ email.</p>
+
+                    <!-- Gợi ý hành động -->
+                    <a href="~/" class="btn btn-outline-primary mt-3">
+                        <i class="fa-solid fa-house"></i> Về trang chủ
+                    </a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-danger mt-3 ms-2">
+                        <i class="fa-solid fa-user-plus"></i> Đăng ký lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

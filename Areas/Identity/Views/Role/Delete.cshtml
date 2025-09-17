@@ -1,0 +1,35 @@
+@model IdentityRole
+@{
+    ViewData["Title"] = "Xóa role";
+}
+<h2>@ViewData["Title"]</h2>
+<partial name="_StatusMessage"></partial>
+
+<hr>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <p>
+                Bạn có chắc chắn muốn xóa
+                <strong class="text-danger">@Model.Name</strong>?
+            </p>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash-alt me-1"></i> Đồng ý
+                </button>
+                <a class="btn btn-secondary" asp-action="Index">
+                    <i class="fas fa-list me-1"></i> Danh sách các role
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

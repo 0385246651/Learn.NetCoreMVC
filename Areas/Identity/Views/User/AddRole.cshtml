@@ -1,0 +1,83 @@
+@model AddUserRoleModel
+@{
+    ViewData["Title"] = "Gán role";
+}
+
+<h4>Thiết lập role cho user: @Model.user.UserName</h4>
+<partial name="_StatusMessage" />
+
+<div class="row">
+    <div class="col-md-6">
+        <form id="set-role-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="RoleNames" class="form-label"></label>
+                @Html.ListBoxFor(m => m.RoleNames, (IEnumerable<SelectListItem>)ViewBag.allRoles, new {
+                id = "id-select-roles",
+                                @class = "form-select"
+                                })
+                <span asp-validation-for="RoleNames" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2 mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-user-shield me-1"></i> Cập nhật
+                </button>
+                <a class="btn btn-secondary" asp-action="Index">
+                    <i class="fas fa-users me-1"></i> Danh sách thành viên
+                </a>
+            </div>
+        </form>
+
+        <hr>
+
+        <p><i class="fas fa-list-ul me-1"></i> Các claim của user có được từ role:</p>
+        @if (Model.claimsInRole.Count > 0)
+        {
+            <ul class="list-group mb-3">
+                @foreach (var claim in Model.claimsInRole)
+                {
+                    <li class="list-group-item">@claim.ClaimType : @claim.ClaimValue</li>
+                }
+            </ul>
+        }
+
+        <hr>
+
+        <p><i class="fas fa-certificate me-1"></i> Các claim riêng:
+            <a class="btn btn-sm btn-outline-primary" asp-action="AddClaim" asp-route-userid="@Model.user.Id">
+                <i class="fas fa-plus me-1"></i> Thêm claim riêng
+            </a>
+        </p>
+        @if (Model.claimsInUserClaim.Count > 0)
+        {
+            <ul class="list-group">
+                @foreach (var claim in Model.claimsInUserClaim)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@claim.ClaimType : @claim.ClaimValue</span>
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="EditClaim" asp-route-claimid="@claim.Id">
+                            <i class="fas fa-edit me-1"></i> Sửa
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="~/lib/multiple-select/multiple-select.min.css" />
+    <script src="~/lib/multiple-select/multiple-select.min.js"></script>
+
+    <script>
+        $("#id-select-roles").multipleSelect({
+            selectAll: false,
+            keepOpen: false,
+            isOpen: false,
+        });
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+}

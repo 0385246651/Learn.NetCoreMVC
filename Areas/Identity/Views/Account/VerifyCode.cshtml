@@ -1,0 +1,40 @@
+﻿@model VerifyCodeViewModel
+@{
+    ViewData["Title"] = "Xác thực";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-controller="Account" asp-action="VerifyCode" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post"
+    role="form">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <input asp-for="Provider" type="hidden" />
+    <input asp-for="RememberMe" type="hidden" />
+
+    @if (!string.IsNullOrEmpty(ViewData["Status"] as string))
+    {
+        <div class="alert alert-info">@ViewData["Status"]</div>
+    }
+
+    <div class="mb-3">
+        <label asp-for="Code" class="form-label"></label>
+        <input asp-for="Code" class="form-control" placeholder="Nhập mã xác thực" />
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="RememberBrowser" class="form-check-input" />
+        <label asp-for="RememberBrowser" class="form-check-label"></label>
+    </div>
+
+    <button type="submit" class="btn btn-warning">
+        <i class="fa fa-shield"></i> Gửi
+    </button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

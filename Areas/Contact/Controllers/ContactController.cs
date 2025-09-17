@@ -10,10 +10,12 @@ using Microsoft.AspNetCore.Authorization;
 using App.Models;
 // có thể set lại alias 
 using ContactModel = App.Models.Contacts.Contact;
+using App.Data;
 
 namespace App.Areas.Contact.Controllers
 {
     [Area("Contact")]
+    [Authorize(Roles = RoleName.Administrator)]
     public class ContactController : Controller
     {
         private readonly AppDbContext _context;

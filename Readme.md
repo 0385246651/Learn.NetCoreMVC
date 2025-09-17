@@ -42,3 +42,27 @@ wwwroot/css (sẽ tự đông thay đổi khi save file scss) - có thể áp d�
 ```
 gulp
 ```
+
+## Dùng LibMan (Library Manager của .NET)
+
+```
+libman install @fortawesome/fontawesome-free --provider unpkg --destination wwwroot/lib/fontawesome
+```
+
+##Sau đó thêm vào \_Layout.cshtml:
+
+```
+<link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
+```
+
+## DÙng bootstrap icon
+
+```
+libman install bootstrap-icons --provider unpkg --destination wwwroot/lib/bootstrap-icons
+```
+
+##Sau đó thêm vào \_Layout.cshtml:
+
+```
+<link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
+```

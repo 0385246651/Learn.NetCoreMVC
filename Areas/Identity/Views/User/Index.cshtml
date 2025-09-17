@@ -1,0 +1,57 @@
+@model UserListModel
+@{
+    ViewData["Title"] = "Danh sách các thành viên";
+}
+
+<h2>@ViewData["Title"]</h2>
+<partial name="_StatusMessage" />
+
+<p class="mb-3"><strong>Tổng số thành viên:</strong> @Model.totalUsers</p>
+
+<table class="table table-striped table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th><i class="fas fa-user me-1"></i> Tên user</th>
+            <th><i class="fas fa-user-tag me-1"></i> Vai trò (role)</th>
+            <th><i class="fas fa-cogs me-1"></i> Tác vụ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.users)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>
+                    @if (string.IsNullOrEmpty(user.RoleNames))
+                    {
+                        <a class="text-dark" asp-action="AddRole" asp-route-id="@user.Id">
+                            <i class="fas fa-plus-circle me-1"></i> Thêm roles
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="AddRole" asp-route-id="@user.Id">
+                            <i class="fas fa-user-tag me-1"></i> @user.RoleNames
+                        </a>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-success" asp-action="SetPassword" asp-route-id="@user.Id">
+                        <i class="fas fa-key me-1"></i> Đặt mật khẩu
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var pagingmodel = new PagingModel()
+    {
+        currentpage = Model.currentPage,
+        countpages = Model.countPages,
+        generateUrl = (int? p) => Url.Action("Index", new { p = p })
+    };
+}
+
+<partial name="_PagingXTL" model="@pagingmodel" />

@@ -125,11 +125,14 @@
       </div>
     </div>
 
-    <div class="text-end mt-3">
+    <div class="text-end mt-3 gap-4 d-flex justify-content-end">
       <!-- Nút mở modal -->
       <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDbModal">
         <i class="bi bi-trash"></i> Delete Db : @connect.Database
       </button>
+
+      <a class="btn btn-warning" asp-action="SeedData"><i class="bi bi-plus">Seed data:
+          @connect.Database</a>
     </div>
 
     <!-- Modal xác nhận -->
@@ -156,6 +159,8 @@
                 <i class="bi bi-trash-fill"></i> Confirm Delete
               </button>
             </form>
+
+
           </div>
         </div>
       </div>

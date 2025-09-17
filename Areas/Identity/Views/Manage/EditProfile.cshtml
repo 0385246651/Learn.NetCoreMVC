@@ -1,0 +1,63 @@
+@model EditExtraProfileModel
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+}
+
+<h4 class="mb-4">
+    <i class="bi bi-person-circle me-2"></i>@ViewData["Title"]
+</h4>
+
+<partial name="_StatusMessage" />
+
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" asp-action="EditProfile" asp-controller="Account" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="UserName" class="form-label">
+                    <i class="bi bi-person-badge me-1"></i> Tên đăng nhập
+                </label>
+                <input asp-for="UserName" class="form-control" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="UserEmail" class="form-label">
+                    <i class="bi bi-envelope me-1"></i> Email
+                </label>
+                <input asp-for="UserEmail" class="form-control" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label">
+                    <i class="bi bi-telephone me-1"></i> Số điện thoại
+                </label>
+                <input asp-for="PhoneNumber" class="form-control" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="HomeAdress" class="form-label">
+                    <i class="bi bi-house-door me-1"></i> Địa chỉ
+                </label>
+                <textarea asp-for="HomeAdress" class="form-control"></textarea>
+                <span asp-validation-for="HomeAdress" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="BirthDate" class="form-label">
+                    <i class="bi bi-calendar-date me-1"></i> Ngày sinh
+                </label>
+                <input asp-for="BirthDate" type="date" class="form-control" />
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+
+            <button id="update-profile-button" type="submit" class="btn btn-primary">
+                <i class="bi bi-save me-1"></i> Lưu dữ liệu
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

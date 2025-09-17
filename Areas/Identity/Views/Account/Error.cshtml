@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Có lỗi";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-danger">
+                <div class="card-body text-center">
+                    <!-- Icon cảnh báo -->
+                    <i class="fa-solid fa-triangle-exclamation fa-4x text-danger mb-4"></i>
+
+                    <h1 class="text-danger">@ViewData["Title"]</h1>
+                    <p class="lead">Lỗi không hoàn thành được tác vụ</p>
+
+                    <!-- Nút điều hướng -->
+                    <a href="~/" class="btn btn-outline-primary mt-3">
+                        <i class="fa-solid fa-house"></i> Quay về trang chủ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Thông báo";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="alert alert-info shadow-lg p-4 rounded-3 text-center">
+                <h2 class="mb-3 text-primary">
+                    <i class="fas fa-envelope-open-text"></i> @ViewData["Title"]
+                </h2>
+                <p class="fs-5">
+                    Hãy kiểm tra <strong>hòm thư email</strong> của bạn để biết cách xác thực tài khoản.
+                </p>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-primary mt-3">
+                    <i class="fas fa-sign-in-alt"></i> Quay lại đăng nhập
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

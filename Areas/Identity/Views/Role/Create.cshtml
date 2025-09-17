@@ -1,0 +1,43 @@
+@model CreateRoleModel
+@{
+    ViewData["Title"] = "Tạo role mới";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h4 class="mb-0">
+            <i class="fa-solid fa-circle-plus"></i> @ViewData["Title"]
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <partial name="_StatusMessage" />
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label fw-bold">
+                    <i class="fa-solid fa-shield-halved"></i> @Html.DisplayNameFor(m => m.Name)
+                </label>
+                <input asp-for="Name" class="form-control" placeholder="Nhập tên role..." />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa-solid fa-plus"></i> Tạo mới
+                </button>
+                <a class="btn btn-secondary" asp-action="Index">
+                    <i class="fa-solid fa-list"></i> Danh sách role
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

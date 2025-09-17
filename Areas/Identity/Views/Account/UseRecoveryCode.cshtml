@@ -1,0 +1,35 @@
+﻿@model UseRecoveryCodeViewModel
+@{
+    ViewData["Title"] = "Sử dụng mã phục hồi";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-controller="Account" asp-action="UseRecoveryCode" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post"
+    class="form-horizontal" role="form">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    @if (!string.IsNullOrEmpty(ViewData["Status"] as string))
+    {
+        <div class="alert alert-info">
+            @ViewData["Status"]
+        </div>
+    }
+
+    <div class="mb-3">
+        <label asp-for="Code" class="form-label"></label>
+        <input asp-for="Code" class="form-control" placeholder="Nhập mã phục hồi" />
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        <i class="fa fa-key"></i> Gửi
+    </button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

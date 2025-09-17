@@ -1,6 +1,9 @@
+using App.Data;
 using App.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 namespace App.Areas.Database.Controllers
 {
@@ -9,9 +12,19 @@ namespace App.Areas.Database.Controllers
     public class DbManageController : Controller
     {
         private readonly AppDbContext _dbContext;
-        public DbManageController(AppDbContext dbContext)
+        private readonly ILogger<DbManageController> _logger;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+
+        public DbManageController(AppDbContext dbContext, ILogger<DbManageController> logger,
+            UserManager<AppUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _dbContext = dbContext;
+            _logger = logger;
+            _userManager = userManager;
+            _roleManager = roleManager;
+
         }
         // GET: DbManage
         public ActionResult Index()
@@ -53,5 +66,41 @@ namespace App.Areas.Database.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> SeedDataAsync()
+        {
+            var rolenames = typeof(RoleName).GetFields()
+                .ToList();
+
+            foreach (var r in rolenames)
+            {
+                var rolename = (string)r.GetRawConstantValue();
+                var rfound = await _roleManager.FindByNameAsync(rolename);
+                if (rfound == null)
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(rolename));
+
+                }
+            }
+
+            // Tạo user admin admin / admin123, admin@example.com
+            var useradmin = await _userManager.FindByNameAsync("admin");
+            if (useradmin == null)
+            {
+                useradmin = new AppUser
+                {
+                    UserName = "admin",
+                    Email = "admin@example.com",
+                    HomeAdress = "Hà Nội",
+                    EmailConfirmed = true,
+                };
+                var result = await _userManager.CreateAsync(useradmin, "admin123");
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(useradmin, RoleName.Administrator);
+                }
+            }
+            StatusMessage = "Đã cập nhật dữ liệu mẫu (seed data) thành công!";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
