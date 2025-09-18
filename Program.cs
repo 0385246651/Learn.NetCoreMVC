@@ -14,11 +14,13 @@ using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 
 // cấu hình EF
+// builder.Services.AddDbContext<AppDbContext>(options =>
+// {
+//     string connectionString = builder.Configuration.GetConnectionString("AppMvcConnectionString");
+//     options.UseSqlServer(connectionString);
+// });
 builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    string connectionString = builder.Configuration.GetConnectionString("AppMvcConnectionString");
-    options.UseSqlServer(connectionString);
-});
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AppDnContext") ?? throw new InvalidOperationException("Connection string 'AppDnContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -27,8 +29,7 @@ builder.Services.AddControllersWithViews();
 
 // Thêm dịch vụ cho Razor Pages (nếu anh định dùng Razor Pages)
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AppDnContext") ?? throw new InvalidOperationException("Connection string 'AppDnContext' not found.")));
+
 
 // Cấu hình để tìm view trong thư mục MyView
 builder.Services.Configure<RazorViewEngineOptions>(options =>
