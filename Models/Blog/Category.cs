@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace App.Models.Blog
 {
@@ -11,8 +12,6 @@ namespace App.Models.Blog
 
     [Key]
     public int Id { get; set; }
-
-
 
     // Tiều đề Category
     [Required(ErrorMessage = "Phải có tên danh mục")]
@@ -42,8 +41,6 @@ namespace App.Models.Blog
 
     [ForeignKey("ParentCategoryId")]
     [Display(Name = "Danh mục cha")]
-
-
     public Category ParentCategory { set; get; }
 
 
