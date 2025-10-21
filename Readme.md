@@ -66,3 +66,9 @@ libman install bootstrap-icons --provider unpkg --destination wwwroot/lib/bootst
 ```
 <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
 ```
+
+## Libman lấy thư viện ở cdnjs.com. thêm 1 khối thư viện mới và chạy câu lệnh
+
+```
+libman restore
+```

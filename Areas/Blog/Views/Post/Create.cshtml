@@ -71,3 +71,9 @@
 
   <partial name="_ValidationScriptsPartial" />
 }
+
+@{
+  SummerNote? summerNoteModel = new App.Models.SummerNote(iDEditor: "#Content", loadLibrary: true);
+}
+
+<partial name="_SummerNote" model="summerNoteModel" />

@@ -1,0 +1,18 @@
+@model App.Models.SummerNote
+
+@if (Model.LoadLibrary)
+{
+  <link rel="stylesheet" href="~/lib/summernote/summernote.min.css" />
+  <script src="~/lib/jquery/jquery.min.js"></script>
+  <script src="~/lib/summernote/summernote.min.js"></script>
+}
+
+<script>
+  $(document).ready(function () {
+    $('@Model.IDEditor').summernote({
+      height: @Model.height,
+      placeholder: 'Nhập nội dung tại đây...',
+      toolbar: @Html.Raw(Model.toolbar)
+    });
+  });
+</script>

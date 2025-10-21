@@ -60,3 +60,13 @@
 
 @* <a asp-action="Index" asp-controller="Product" asp-route="" asp-route-id="" asp-all-route-data="@routeValues"
     asp-area="ProductManage">Ví dụ</a> *@
+
+<textarea id="summernoteEditor"></textarea>
+
+@* nạp summernote *@
+
+@{
+    SummerNote? summerNoteModel = new App.Models.SummerNote(iDEditor: "#summernoteEditor", loadLibrary: true);
+}
+
+<partial name="_SummerNote" model="summerNoteModel" />
