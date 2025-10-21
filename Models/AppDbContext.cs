@@ -31,9 +31,23 @@ namespace App.Models
         }
       }
 
+      // dùng fluent API để cấu hình cho Category
+      // chỉ mục cho Slug
       modelBuilder.Entity<Category>(entity =>
       {
-        entity.HasIndex(c => c.Slug);
+        entity.HasIndex(c => c.Slug).IsUnique();
+      });
+      // thiết lập quan hệ nhiều - nhiều giữa Post và Category qua PostCategory
+      // 2 khóa chính PostID và CategoryID trong PostCategory 
+      modelBuilder.Entity<PostCategory>(entity =>
+      {
+        entity.HasKey(c => new { c.PostID, c.CategoryID });
+      });
+
+      //
+      modelBuilder.Entity<Post>(entity =>
+      {
+        entity.HasIndex(p => p.Slug).IsUnique();
       });
     }
 
@@ -41,5 +55,8 @@ namespace App.Models
     public DbSet<Contact> Contacts { get; set; }
 
     public DbSet<Category> Categories { get; set; }
+
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<PostCategory> PostCategories { get; set; }
   }
 }

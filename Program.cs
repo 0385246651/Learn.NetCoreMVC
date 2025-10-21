@@ -20,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 //     options.UseSqlServer(connectionString);
 // });
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AppDnContext") ?? throw new InvalidOperationException("Connection string 'AppDnContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AppDbContext") ?? throw new InvalidOperationException("Connection string 'AppDbContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -186,6 +186,11 @@ app.MapAreaControllerRoute(
     areaName: "ProductManage",
     pattern: "/{controller}/{action=Index}/{id?}"
     ).WithStaticAssets();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+).WithStaticAssets();
 
 app.MapControllerRoute(
     // name: "firstroute",

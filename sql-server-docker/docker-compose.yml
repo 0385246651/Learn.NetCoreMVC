@@ -1,9 +1,9 @@
 version: "3.7"
 
 services:
-  xtlab-mssql:
+  netcore-mvc-mssql:
     image: "mcr.microsoft.com/mssql/server:2017-latest"
-    container_name: sqlserver-xtlab
+    container_name: sqlserver-netcore-mvc
     restart: always
     hostname: mssql
     environment:
@@ -19,4 +19,4 @@ services:
 
 volumes:
   mssqlvolume:
-    name: sqlserver-xtlab-vl
+    name: sqlserver-raiden-vl
