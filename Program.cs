@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -153,6 +154,16 @@ app.AddStatusCodePage(); // them middleware xu ly loi 404, 500, ..
 
 
 app.MapStaticAssets();
+
+app.UseStaticFiles();
+//mở thư mục Uploads để truy cập từ trình duyệt
+//mở file tương ứng trong thư mục Uploads khi truy cập đường dẫn /contents
+app.UseStaticFiles(new StaticFileOptions()
+{
+    RequestPath = "/contents",
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "Uploads"))
+});
 
 // Đây là phần thay đổi: gọi các phương thức Map* trực tiếp
 // Các phương thức này nên được đặt sau app.UseRouting()

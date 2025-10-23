@@ -72,3 +72,9 @@ libman install bootstrap-icons --provider unpkg --destination wwwroot/lib/bootst
 ```
 libman restore
 ```
+
+## Tích hợp gói elFinder.NetCore
+
+```
+dotnet add package elFinder.NetCore
+```

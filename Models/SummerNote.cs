@@ -15,7 +15,7 @@ namespace App.Models
         public string IDEditor { get; set; }
         public bool LoadLibrary { get; set; }
 
-        public int height { get; set; } = 120;
+        public int height { get; set; } = 400;
         public string toolbar { get; set; } = @"
            [
              ['style', ['style']],
@@ -25,7 +25,7 @@ namespace App.Models
             ['color', ['color']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['height', ['height']],
-            ['insert', ['link', 'picture', 'video', 'table', 'hr']],
+            ['insert', ['link', 'picture', 'video', 'table', 'hr', 'elfinder']],
             ['view', ['fullscreen', 'codeview', 'help']],
             ['table', ['table']]
            ]

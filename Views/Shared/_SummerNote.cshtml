@@ -2,17 +2,77 @@
 
 @if (Model.LoadLibrary)
 {
+  <!-- Core JS & CSS -->
+  @* <script src="~/lib/jquery/jquery.min.js"></script> *@
+  @* <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script> *@
+
   <link rel="stylesheet" href="~/lib/summernote/summernote.min.css" />
-  <script src="~/lib/jquery/jquery.min.js"></script>
   <script src="~/lib/summernote/summernote.min.js"></script>
+
+  <!-- jQuery UI + elFinder -->
+  <link rel="stylesheet" href="~/lib/jqueryui/themes/base/jquery-ui.css" />
+  <link rel="stylesheet" href="~/lib/elfinder/css/elfinder.full.css" />
+  <link rel="stylesheet" href="~/lib/elfinder/css/theme.min.css" />
+
+  <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+  <script src="~/lib/elfinder/js/elfinder.min.js"></script>
 }
 
 <script>
+  // Định nghĩa plugin elFinder cho Summernote
+  (function (factory) {
+    if (typeof define === 'function' && define.amd) {
+      define(['jquery'], factory);
+    } else if (typeof module === 'object' && module.exports) {
+      module.exports = factory(require('jquery'));
+    } else {
+      factory(window.jQuery);
+    }
+  }(function ($) {
+    $.extend($.summernote.plugins, {
+      'elfinder': function (context) {
+        var ui = $.summernote.ui;
+        context.memo('button.elfinder', function () {
+          return ui.button({
+            contents: '<i class="note-icon-picture"></i> elFinder',
+            tooltip: 'Quản lý file',
+            click: function () {
+              elfinderDialog(context);
+            }
+          }).render();
+        });
+      }
+    });
+  }));
+
+  // Mở elFinder dialog
+  function elfinderDialog(editor) {
+    var fm = $('<div/>').dialogelfinder({
+      baseUrl: '@Url.Content("~/lib/elfinder/")',
+      url: '@Url.Action("Connector", "FileManager")', // bỏ area vì route tuyệt đối
+      lang: 'vi',
+      width: 840,
+      height: 450,
+      destroyOnClose: true,
+      getFileCallback: function (files, fm) {
+        console.log('Selected:', files);
+        editor.invoke('editor.insertImage', files.url);
+      },
+      commandsOptions: {
+        getfile: {
+          oncomplete: 'close',
+          folders: false
+        }
+      }
+    }).dialogelfinder('instance');
+  }
+
+  // Khởi tạo Summernote
   $(document).ready(function () {
     $('@Model.IDEditor').summernote({
       height: @Model.height,
       placeholder: 'Nhập nội dung tại đây...',
       toolbar: @Html.Raw(Model.toolbar)
-    });
+      });
   });
 </script>
