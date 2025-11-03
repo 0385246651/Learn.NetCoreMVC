@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using App.Utilities;
 using App.Areas.Blog.Models;
 
-namespace AppMvc.Areas.Blog.Controllers
+namespace App.Areas.Blog.Controllers
 {
     [Area("Blog")]
     [Route("admin/blog/post/[action]/{id?}")]

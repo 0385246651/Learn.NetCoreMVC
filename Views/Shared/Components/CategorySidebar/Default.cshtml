@@ -1,0 +1,51 @@
+@using App.Components;
+@using static App.Components.CategorySidebar;
+@model CategorySidebarData;
+
+@{
+  int level = Model.level;
+}
+
+@if (Model.Categories != null && Model.Categories.Count > 0)
+{
+  if (level == 0)
+  {
+    @Html.Raw("<div class=\"categorysidebar\">")
+    ;
+    <h3>
+      <a asp-controller="ViewPost" asp-action="Index" asp-route-categoryslug=""
+        class="d-flex justify-content-between align-items-center text-decoration-none">
+        Tất cả các chuyên mục
+      </a>
+    </h3>
+  }
+  <ul class="category-sidebar-list list-unstyled ps-3">
+    @foreach (var category in Model.Categories)
+    {
+      var cssActive = (category.Slug == Model.categoryslug) ? "active" : null;
+      <li>
+
+        <a class="@cssActive" asp-controller="ViewPost" asp-action="Index" asp-route-categoryslug="@category.Slug"
+          class="d-flex justify-content-between align-items-center text-decoration-none">
+          <span>@category.Title</span>
+        </a>
+
+        @if (category.CategoryChildren != null && category.CategoryChildren.Count > 0)
+        {
+          @await Component.InvokeAsync("App.Components.CategorySidebar",
+          new CategorySidebarData()
+          {
+            Categories = category.CategoryChildren.ToList(),
+            level = level + 1,
+            categoryslug = Model.categoryslug
+          })
+        }
+      </li>
+    }
+  </ul>
+  if (level == 0)
+  {
+    @Html.Raw("<div/>")
+    ;
+  }
+}

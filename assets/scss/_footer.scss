@@ -1,0 +1,11 @@
+.app-footer {
+  background-color: #080A10;
+  color: white !important;
+  text-align: center;
+  a {
+    color: #b9c3ce !important;
+    &:hover {
+      color: white !important;
+    }
+  }
+}
