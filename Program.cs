@@ -131,7 +131,7 @@ builder.Services.AddAuthorization(option =>
 // services.AddSingleton<ProductService>();
 // services.AddSingleton<ProductService, ProductService>();
 // services.AddSingleton(typeof(ProductService));
-builder.Services.AddSingleton(typeof(ProductService), typeof(ProductService));
+// builder.Services.AddSingleton(typeof(ProductService), typeof(ProductService));
 
 var app = builder.Build();
 
