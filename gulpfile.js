@@ -56,3 +56,5 @@ exports.default = gulp.series(
   // minifyCss
   watchFiles
 );
+
+exports.watch = watchFiles;

@@ -52,6 +52,6 @@ namespace App.Models.Product
 
     public List<ProductCategoryProduct> ProductCategoryProducts { get; set; }
 
-    // public List<ProductPhoto> Photos { get; set; }
+    public List<ProductPhoto> Photos { get; set; }
   }
 }

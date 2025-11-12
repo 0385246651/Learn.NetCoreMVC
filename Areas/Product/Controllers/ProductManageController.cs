@@ -13,11 +13,14 @@ using Microsoft.AspNetCore.Identity;
 using App.Utilities;
 using App.Areas.Product.Models;
 using App.Models.Product;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 
 namespace App.Areas.Product.Controllers
 {
     [Area("Product")]
-    [Route("admin/productmanage/product/[action]/{id?}")]
+    [Route("admin/productmanage/[action]/{id?}")]
     [Authorize(Roles = RoleName.Administrator + "," + RoleName.Editor)]
     public class ProductManageController : Controller
     {
@@ -39,9 +42,9 @@ namespace App.Areas.Product.Controllers
                         .Include(p => p.Author)
                         .OrderByDescending(p => p.DateUpdated);
 
-            int totalProducts = await products.CountAsync();
+            int totalPosts = await products.CountAsync();
             if (pagesize <= 0) pagesize = 10;
-            int countPages = (int)Math.Ceiling((double)totalProducts / pagesize);
+            int countPages = (int)Math.Ceiling((double)totalPosts / pagesize);
 
             if (currentPage > countPages) currentPage = countPages;
             if (currentPage < 1) currentPage = 1;
@@ -58,7 +61,7 @@ namespace App.Areas.Product.Controllers
             };
 
             ViewBag.pagingModel = pagingModel;
-            ViewBag.totalProducts = totalProducts;
+            ViewBag.totalPosts = totalPosts;
 
             ViewBag.postIndex = (currentPage - 1) * pagesize;
 
@@ -105,7 +108,7 @@ namespace App.Areas.Product.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,Slug,Content,Published,CategoryIDs, Price")] CreateProductModel product)
+        public async Task<IActionResult> Create([Bind("Title,Description,Slug,Content,Published,CategoryIDs,Price")] CreateProductModel product)
         {
             var categories = await _context.CategoryProduct.ToListAsync();
             ViewData["categories"] = new MultiSelectList(categories, "Id", "Title");
@@ -193,7 +196,7 @@ namespace App.Areas.Product.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductID,Title,Description,Slug,Content,Published,CategoryIDs, Price")] CreateProductModel product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductID,Title,Description,Slug,Content,Published,CategoryIDs,Price")] CreateProductModel product)
         {
             if (id != product.ProductID)
             {
@@ -217,6 +220,7 @@ namespace App.Areas.Product.Controllers
             ModelState.Remove("ProductCategoryProducts");
             ModelState.Remove("AuthorId");
             ModelState.Remove("Author");
+
             if (ModelState.IsValid)
             {
                 try
@@ -236,16 +240,17 @@ namespace App.Areas.Product.Controllers
                     productUpdate.DateUpdated = DateTime.Now;
                     productUpdate.Price = product.Price;
 
+
                     // Update PostCategory
                     if (product.CategoryIDs == null) product.CategoryIDs = new int[] { };
 
                     var oldCateIds = productUpdate.ProductCategoryProducts.Select(c => c.CategoryID).ToArray();
                     var newCateIds = product.CategoryIDs;
 
-                    var removeCatePosts = from postCate in productUpdate.ProductCategoryProducts
-                                          where (!newCateIds.Contains(postCate.CategoryID))
-                                          select postCate;
-                    _context.ProductCategoryProduct.RemoveRange(removeCatePosts);
+                    var removeCateProducts = from productCate in productUpdate.ProductCategoryProducts
+                                             where (!newCateIds.Contains(productCate.CategoryID))
+                                             select productCate;
+                    _context.ProductCategoryProduct.RemoveRange(removeCateProducts);
 
                     var addCateIds = from CateId in newCateIds
                                      where !oldCateIds.Contains(CateId)
@@ -253,8 +258,7 @@ namespace App.Areas.Product.Controllers
 
                     foreach (var CateId in addCateIds)
                     {
-                        _context.ProductCategoryProduct.Add(new
-()
+                        _context.ProductCategoryProduct.Add(new ProductCategoryProduct()
                         {
                             ProductID = id,
                             CategoryID = CateId
@@ -267,7 +271,7 @@ namespace App.Areas.Product.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PostExists(product.ProductID))
+                    if (!ProductExists(product.ProductID))
                     {
                         return NotFound();
                     }
@@ -317,14 +321,164 @@ namespace App.Areas.Product.Controllers
             _context.Product.Remove(product);
             await _context.SaveChangesAsync();
 
-            StatusMessage = "Bạn vừa xóa Sản phẩm: " + product.Title;
+            StatusMessage = "Bạn vừa xóa sản phẩm: " + product.Title;
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PostExists(int id)
+        private bool ProductExists(int id)
         {
             return _context.Product.Any(e => e.ProductID == id);
         }
+
+        public class UploadOneFile
+        {
+            [Required(ErrorMessage = "Phải chọn file upload")]
+            [DataType(DataType.Upload)]
+            [FileExtensions(Extensions = "png,jpg,jpeg,gif")]
+            [Display(Name = "Chọn file upload")]
+            public IFormFile FileUpload { get; set; }
+        }
+
+        [HttpGet]
+        public IActionResult UploadPhoto(int id)
+        {
+            var product = _context.Product.Where(e => e.ProductID == id)
+                            .Include(p => p.Photos)
+                            .FirstOrDefault();
+            if (product == null)
+            {
+                return NotFound("Không có sản phẩm");
+            }
+            ViewData["product"] = product;
+            return View(new UploadOneFile());
+        }
+
+        [HttpPost, ActionName("UploadPhoto")]
+        public async Task<IActionResult> UploadPhotoAsync(int id, [Bind("FileUpload")] UploadOneFile f)
+        {
+            var product = _context.Product.Where(e => e.ProductID == id)
+                .Include(p => p.Photos)
+                .FirstOrDefault();
+
+            if (product == null)
+            {
+                return NotFound("Không có sản phẩm");
+            }
+            ViewData["product"] = product;
+
+            if (f != null)
+            {
+                var file1 = Path.GetFileNameWithoutExtension(Path.GetRandomFileName())
+                            + Path.GetExtension(f.FileUpload.FileName);
+
+                var file = Path.Combine("Uploads", "Product", file1);
+
+                using (var filestream = new FileStream(file, FileMode.Create))
+                {
+                    await f.FileUpload.CopyToAsync(filestream);
+                }
+
+                _context.Add(new ProductPhoto()
+                {
+                    ProductID = product.ProductID,
+                    FileName = file1
+                });
+
+                await _context.SaveChangesAsync();
+            }
+
+
+            return View(f);
+        }
+
+        [HttpPost]
+        public IActionResult ListPhotos(int id)
+        {
+            var product = _context.Product.Where(e => e.ProductID == id)
+                .Include(p => p.Photos)
+                .FirstOrDefault();
+
+            if (product == null)
+            {
+                return Json(
+                    new
+                    {
+                        success = 0,
+                        message = "Product not found",
+                    }
+                );
+            }
+
+            var listphotos = product.Photos.Select(photo => new
+            {
+                id = photo.ID,
+                path = "/contents/Product/" + photo.FileName
+            });
+
+            return Json(
+                new
+                {
+                    success = 1,
+                    photos = listphotos
+                }
+            );
+
+
+        }
+
+        [HttpPost]
+        public IActionResult DeletePhoto(int id)
+        {
+            var photo = _context.ProductPhotos.Where(p => p.ID == id).FirstOrDefault();
+            if (photo != null)
+            {
+                _context.Remove(photo);
+                _context.SaveChanges();
+
+                var filename = "Uploads/Product/" + photo.FileName;
+                System.IO.File.Delete(filename);
+            }
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadPhotoApi(int id, [Bind("FileUpload")] UploadOneFile f)
+        {
+            var product = _context.Product.Where(e => e.ProductID == id)
+                .Include(p => p.Photos)
+                .FirstOrDefault();
+
+            if (product == null)
+            {
+                return NotFound("Không có sản phẩm");
+            }
+
+
+            if (f != null)
+            {
+                var file1 = Path.GetFileNameWithoutExtension(Path.GetRandomFileName())
+                            + Path.GetExtension(f.FileUpload.FileName);
+
+                var file = Path.Combine("Uploads", "Product", file1);
+
+                using (var filestream = new FileStream(file, FileMode.Create))
+                {
+                    await f.FileUpload.CopyToAsync(filestream);
+                }
+
+                _context.Add(new ProductPhoto()
+                {
+                    ProductID = product.ProductID,
+                    FileName = file1
+                });
+
+                await _context.SaveChangesAsync();
+            }
+
+
+            return Ok();
+        }
+
     }
 }
