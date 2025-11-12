@@ -220,6 +220,7 @@ namespace App.Areas.Product.Controllers
             ModelState.Remove("ProductCategoryProducts");
             ModelState.Remove("AuthorId");
             ModelState.Remove("Author");
+            ModelState.Remove("Photos");
 
             if (ModelState.IsValid)
             {
@@ -335,7 +336,6 @@ namespace App.Areas.Product.Controllers
         {
             [Required(ErrorMessage = "Phải chọn file upload")]
             [DataType(DataType.Upload)]
-            [FileExtensions(Extensions = "png,jpg,jpeg,gif")]
             [Display(Name = "Chọn file upload")]
             public IFormFile FileUpload { get; set; }
         }
@@ -353,43 +353,70 @@ namespace App.Areas.Product.Controllers
             ViewData["product"] = product;
             return View(new UploadOneFile());
         }
-
         [HttpPost, ActionName("UploadPhoto")]
         public async Task<IActionResult> UploadPhotoAsync(int id, [Bind("FileUpload")] UploadOneFile f)
         {
-            var product = _context.Product.Where(e => e.ProductID == id)
+            var product = _context.Product
                 .Include(p => p.Photos)
-                .FirstOrDefault();
+                .FirstOrDefault(e => e.ProductID == id);
 
             if (product == null)
-            {
                 return NotFound("Không có sản phẩm");
-            }
+
             ViewData["product"] = product;
 
-            if (f != null)
+            if (f?.FileUpload == null)
             {
-                var file1 = Path.GetFileNameWithoutExtension(Path.GetRandomFileName())
-                            + Path.GetExtension(f.FileUpload.FileName);
-
-                var file = Path.Combine("Uploads", "Product", file1);
-
-                using (var filestream = new FileStream(file, FileMode.Create))
-                {
-                    await f.FileUpload.CopyToAsync(filestream);
-                }
-
-                _context.Add(new ProductPhoto()
-                {
-                    ProductID = product.ProductID,
-                    FileName = file1
-                });
-
-                await _context.SaveChangesAsync();
+                ModelState.AddModelError("FileUpload", "Bạn chưa chọn file.");
+                return View(f);
             }
 
+            var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" };
+            var fileExtension = Path.GetExtension(f.FileUpload.FileName)
+                                    .Trim()
+                                    .ToLowerInvariant();
 
-            return View(f);
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                ModelState.AddModelError("FileUpload", "Chỉ được upload file ảnh (.png, .jpg, .jpeg, .gif).");
+                return View(f);
+            }
+
+            // ✅ Kiểm tra MIME để chống giả mạo file
+            var mime = f.FileUpload.ContentType.ToLower();
+            if (!mime.StartsWith("image/"))
+            {
+                ModelState.AddModelError("FileUpload", "File không phải là ảnh hợp lệ.");
+                return View(f);
+            }
+
+            if (!ModelState.IsValid)
+                return View(f);
+
+            var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + fileExtension;
+            var folder = Path.Combine("Uploads", "Products");
+            Directory.CreateDirectory(folder);
+
+            var filePath = Path.Combine(folder, fileName);
+            using (var filestream = new FileStream(filePath, FileMode.Create))
+            {
+                await f.FileUpload.CopyToAsync(filestream);
+            }
+
+            var photoUrl = Path.Combine("/Uploads/Products/", fileName).Replace("\\", "/");
+
+            _context.ProductPhotos.Add(new ProductPhoto()
+            {
+                ProductID = product.ProductID,
+                FileName = fileName,
+                PhotoURL = photoUrl
+            });
+
+            await _context.SaveChangesAsync();
+
+            ModelState.Clear();
+            ViewBag.Message = "Upload thành công!";
+            return View(new UploadOneFile());
         }
 
         [HttpPost]
@@ -413,7 +440,7 @@ namespace App.Areas.Product.Controllers
             var listphotos = product.Photos.Select(photo => new
             {
                 id = photo.ID,
-                path = "/contents/Product/" + photo.FileName
+                path = "/contents/Products/" + photo.FileName
             });
 
             return Json(
@@ -436,7 +463,8 @@ namespace App.Areas.Product.Controllers
                 _context.Remove(photo);
                 _context.SaveChanges();
 
-                var filename = "Uploads/Product/" + photo.FileName;
+                // Xóa file trên ổ cứng
+                var filename = "Uploads/Products/" + photo.FileName;
                 System.IO.File.Delete(filename);
             }
             return Ok();
@@ -457,20 +485,24 @@ namespace App.Areas.Product.Controllers
 
             if (f != null)
             {
-                var file1 = Path.GetFileNameWithoutExtension(Path.GetRandomFileName())
+                var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName())
                             + Path.GetExtension(f.FileUpload.FileName);
 
-                var file = Path.Combine("Uploads", "Product", file1);
+                var file = Path.Combine("Uploads", "Products", fileName);
 
                 using (var filestream = new FileStream(file, FileMode.Create))
                 {
                     await f.FileUpload.CopyToAsync(filestream);
                 }
 
+                // => Thêm đoạn này để có URL đầy đủ
+                var photoUrl = Path.Combine("/Uploads/Products/", fileName).Replace("\\", "/");
+
                 _context.Add(new ProductPhoto()
                 {
                     ProductID = product.ProductID,
-                    FileName = file1
+                    FileName = fileName,
+                    PhotoURL = photoUrl // ✅ thêm dòng này
                 });
 
                 await _context.SaveChangesAsync();
