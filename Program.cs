@@ -31,6 +31,13 @@ builder.Services.AddControllersWithViews();
 // Thêm dịch vụ cho Razor Pages (nếu anh định dùng Razor Pages)
 builder.Services.AddRazorPages();
 
+//cấu hình sử dụng session và 
+builder.Services.AddDistributedMemoryCache();           // Đăng ký dịch vụ lưu cache trong bộ nhớ (Session sẽ sử dụng nó)
+builder.Services.AddSession(cfg =>
+{                    // Đăng ký dịch vụ Session
+    cfg.Cookie.Name = "HaibabaMVC";             // Đặt tên Session - tên này sử dụng ở Browser (Cookie)
+    cfg.IdleTimeout = new TimeSpan(0, 30, 0);    // Thời gian tồn tại của Session
+});
 
 // Cấu hình để tìm view trong thư mục MyView
 builder.Services.Configure<RazorViewEngineOptions>(options =>
@@ -127,6 +134,8 @@ builder.Services.AddAuthorization(option =>
     });
 });
 
+builder.Services.AddTransient<CartService>();
+
 //cấu hình services
 // services.AddSingleton<ProductService>();
 // services.AddSingleton<ProductService, ProductService>();
@@ -164,6 +173,9 @@ app.UseStaticFiles(new StaticFileOptions()
     FileProvider = new PhysicalFileProvider(
         Path.Combine(Directory.GetCurrentDirectory(), "Uploads"))
 });
+
+//Dùng Session
+app.UseSession();
 
 // Đây là phần thay đổi: gọi các phương thức Map* trực tiếp
 // Các phương thức này nên được đặt sau app.UseRouting()

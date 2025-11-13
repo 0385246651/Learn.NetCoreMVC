@@ -23,10 +23,9 @@
         <span asp-validation-for="Title" class="text-danger"></span>
       </div>
 
-      <input class="collapse" type="file" accept=".png,.jpg,.jpeg,.gif" id="selectfileupload"
-        onchange="AutoUploadPhoto()" />
+      <input class="collapse " type="file" id="selectfileupload" onchange="AutoUploadPhoto()" />
 
-      <span class="btn btn-primary mt-2" onclick="ClickButtoUpload()">Upload ảnh sản phẩm</span>
+      <span class="btn btn-primary mt-2" onclick="ClickButtoUpload()">Upload Hình ảnh</span>
 
       <div id="box-photo-upload" class="d-flex flex-wrap photo-upload" data-id="@Model.ProductID">
       </div>
@@ -177,7 +176,6 @@
               '<div class="photodetail w-25 p-1">'
               + '<img class="w-100" src="' + item.path + '" />'
               + '<span class="btn btn-danger" data-id="' + item.id + '">Delete</span></div>');
-
             box.append(e);
 
           });
