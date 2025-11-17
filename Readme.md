@@ -78,3 +78,9 @@ libman restore
 ```
 dotnet add package elFinder.NetCore
 ```
+
+## Khi cần thêm thư viện dùng LibMan thì chỉ cần vào file libman.json và thêm 1 obj sau đó chạy lệnh (về version thì có thể vào CDN js để xem)
+
+```
+libman restore
+```

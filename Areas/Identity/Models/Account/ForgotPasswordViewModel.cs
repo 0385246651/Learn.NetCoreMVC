@@ -13,6 +13,7 @@ namespace App.Areas.Identity.Models.AccountViewModels
     {
         [Required]
         [EmailAddress]
+        [Display(Name = "Email", Prompt = "Email")]
         public string Email { get; set; }
     }
 }

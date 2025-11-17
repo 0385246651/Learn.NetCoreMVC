@@ -11,11 +11,14 @@
         <ul class="nav navbar-nav navbar-right text-light">
             <li class="nav-item">
                 <a class="nav-link text-light" asp-area="Identity" asp-controller="Manage" asp-action="Index"
-                    title="Manage">Xin chào
+                    title="Manage">
+                    <i class="far fa-user" aria-hidden="true"></i>
                     @UserManager.GetUserName(User)!</a>
             </li>
             <li class="nav-item">
-                <button type="submit" class="text-light btn btn-link navbar-btn navbar-link">Đăng xuất</button>
+                <button type="submit" class="text-light btn btn-link navbar-btn navbar-link" title="Đăng xuất">
+                    <i class="fa fa-sign-out-alt" aria-hidden="true"></i>
+                </button>
             </li>
         </ul>
     </form>
@@ -24,10 +27,11 @@ else
 {
     <ul class="nav navbar-nav navbar-right">
         <li class="nav-item">
-            <a class="nav-link text-light" asp-area="Identity" asp-controller="Account" asp-action="Register">Đăng ký</a>
-        </li>
+            @* <a class="nav-link text-light" asp-area="Identity" asp-controller="Account" asp-action="Register">Đăng ký</a>
+        </li> *@
         <li class="nav-item">
-            <a class="nav-link text-light" asp-area="Identity" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+            <a class="nav-link text-light" asp-area="Identity" asp-controller="Account" asp-action="Login"
+                title="Đăng nhập"><i class="fas fa-sign-in-alt" aria-hidden="true"></i></a>
         </li>
     </ul>
 }
