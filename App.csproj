@@ -46,4 +46,10 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
 
+<!-- Khi Publish thì coppy toàn bộ thư mục file tĩnh Uploads  -->
+    <ItemGroup> 
+    <Content Include="Uploads\**"> 
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </Content> 
+  </ItemGroup>
 </Project>
