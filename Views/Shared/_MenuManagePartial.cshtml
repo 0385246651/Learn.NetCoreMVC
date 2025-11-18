@@ -1,4 +1,4 @@
-@using Microsoft.AspNetCore.Authorization
+@* @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService authorizationService
 
 @{
@@ -7,13 +7,16 @@
 
 @if (result.Succeeded)
 {
-  <div class="dropdown">
-    <a href="#" class="btn btn-outline-danger dropdown-toggle" id="managedropdownmenu" data-bs-toggle="dropdown"
-      aria-expanded="false">
-      <i class="fas fa-cog" aria-hidden="true"></i>
-    </a>
+  <a class="dropdown-item" asp-area="AdminCP" asp-controller="AdminCP" asp-action="Index">
+    <i class="fas fa-cog" aria-hidden="true"></i>
+  </a>
 
+  <div class="dropdown">
     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="managedropdownmenu">
+      <a class="dropdown-item" asp-area="Database" asp-controller="DbManage" asp-action="Index">
+        <i class="fas fa-cog" aria-hidden="true"></i> Quản trị
+      </a>
+
       <a class="dropdown-item" asp-area="Database" asp-controller="DbManage" asp-action="Index">
         Database
       </a>
@@ -51,4 +54,19 @@
       </a>
     </div>
   </div>
+} *@
+
+
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService authorizationService
+
+@{
+  var result = await authorizationService.AuthorizeAsync(this.User, "ViewManageMenu");
+}
+
+@if (result.Succeeded)
+{
+  <a class="nav-link text-light" asp-action="Index" asp-controller="AdminCP" asp-area="AdminCP">
+    <i class="fas fa-cog"></i> Quản trị
+  </a>
 }

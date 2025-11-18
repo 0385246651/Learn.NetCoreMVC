@@ -1,7 +1,10 @@
 @model App.Models.Contacts.Contact
+@using App.Menu
+@inject AdminSidebarService _AdminSidebarService
 
 @{
     ViewData["Title"] = "Thông tin chi tiết liên hệ";
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <h1>Thông tin liên hệ</h1>
@@ -44,3 +47,12 @@
 <div>
     <a asp-action="Index" class="btn btn-primary">Danh sách liên hệ</a>
 </div>
+
+@{
+    _AdminSidebarService.SetActive("Contact", "Index", "Contact");
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
+}

@@ -1,7 +1,10 @@
 @model App.Models.Product.CategoryProduct
+@using App.Menu
+@inject AdminSidebarService _AdminSidebarService
 
 @{
   ViewData["Title"] = "Xóa chuyên mục Sản phẩm";
+  Layout = "/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 
@@ -23,3 +26,12 @@
     <a asp-action="Index">Danh sách chuyên mục Sản phẩm</a>
   </form>
 </div>
+
+@{
+  _AdminSidebarService.SetActive("Contact", "Index", "Contact");
+}
+
+@section Sidebar
+{
+  @Html.Raw(_AdminSidebarService.renderHtml())
+}

@@ -1,7 +1,11 @@
 @model IEnumerable<App.Models.Product.CategoryProduct>
+@using App.Menu
+@inject AdminSidebarService _AdminSidebarService
+
 
 @{
   ViewData["Title"] = "Chuyên mục Sản phẩm";
+  Layout = "/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -61,11 +65,11 @@
   }
 }
 
-@* @{
+@{
   _AdminSidebarService.SetActive("Category", "Index", "Blog");
 }
 
 @section Sidebar
 {
   @Html.Raw(_AdminSidebarService.renderHtml())
-} *@
+}

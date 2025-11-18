@@ -2,10 +2,12 @@ using System.Configuration;
 using System.Net;
 using App.Data;
 using App.ExtendMethods;
+using App.Menu;
 using App.Models;
 using App.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
@@ -135,6 +137,11 @@ builder.Services.AddAuthorization(option =>
 });
 
 builder.Services.AddTransient<CartService>();
+
+// phải inject đẻ làm tham số cho adminsidebarService
+// vì đay là nơi chưa các dịch vụ để chỗ khác inject
+builder.Services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
+builder.Services.AddTransient<AdminSidebarService>();
 
 //cấu hình services
 // services.AddSingleton<ProductService>();

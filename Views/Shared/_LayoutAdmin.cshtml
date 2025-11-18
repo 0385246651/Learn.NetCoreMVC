@@ -1,0 +1,400 @@
+@using Microsoft.AspNetCore.Identity
+@using App.Models
+@inject UserManager<AppUser> UserManager
+
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="light">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>@ViewData["Title"]</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+  <!-- Custom Admin CSS -->
+  <link rel="stylesheet" href="~/css/admin.css" />
+
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    #wrapper {
+      min-height: 100vh;
+    }
+
+    /* Sidebar styles */
+    #sidebar {
+      width: 260px;
+      transition: width 0.3s ease;
+      position: relative;
+      z-index: 1040;
+      overflow: hidden;
+    }
+
+    #sidebar.collapsed {
+      width: 80px;
+    }
+
+    #sidebar.collapsed .sidebar-brand span,
+    #sidebar.collapsed .nav-link span,
+    #sidebar.collapsed .collapse {
+      display: none;
+    }
+
+    #sidebar.collapsed .nav-link {
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    #sidebar.collapsed .nav-link i {
+      margin-right: 0;
+    }
+
+    #sidebar .sidebar-brand {
+      padding: 1.25rem;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    #sidebar .nav-link {
+      padding: 0.875rem 1.25rem;
+      transition: all 0.2s;
+      border-radius: 0.375rem;
+      margin: 0.25rem 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    #sidebar .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(4px);
+    }
+
+    #sidebar .nav-link.bg-light {
+      background-color: rgba(255, 255, 255, 0.25) !important;
+    }
+
+    #sidebar .nav-link i {
+      width: 1.5rem;
+      margin-right: 0.75rem;
+      font-size: 1.1rem;
+    }
+
+    /* Submenu styles - ENHANCED */
+    #sidebar .collapse .nav {
+      background-color: rgba(0, 0, 0, 0.15);
+      border-radius: 0.375rem;
+      padding: 0.5rem 0;
+      margin: 0.25rem 0.5rem;
+    }
+
+    #sidebar .dropdown-item {
+      padding: 0.75rem 1rem 0.75rem 3rem;
+      font-size: 0.95rem;
+      border-radius: 0.25rem;
+      margin: 0.125rem 0.5rem;
+      position: relative;
+    }
+
+    #sidebar .dropdown-item::before {
+      content: "•";
+      position: absolute;
+      left: 1.5rem;
+      font-size: 1.2rem;
+      opacity: 0.7;
+    }
+
+    #sidebar .dropdown-item:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      padding-left: 3.25rem;
+    }
+
+    #sidebar .dropdown-item.bg-light {
+      background-color: rgba(255, 255, 255, 0.3) !important;
+      font-weight: 600;
+    }
+
+    /* Toggle button - FIXED AT SIDEBAR */
+    #sidebarToggle {
+      @* position: absolute;
+      right: 15px;
+      top: 20px;
+      z-index: 1050; *@
+      width: 36px;
+      height: 36px;
+      border-radius: 0.375rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #sidebarToggleTop {
+      width: 40px;
+      height: 40px;
+    }
+
+    /* Theme colors */
+    [data-bs-theme="light"] #sidebar {
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    }
+
+    [data-bs-theme="dark"] #sidebar {
+      background: linear-gradient(180deg, #232526 0%, #414345 100%);
+    }
+
+    /* Content area - FIXED FOOTER */
+    #content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    /* Topbar enhancement */
+    .navbar {
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    [data-bs-theme="dark"] .navbar {
+      background-color: rgba(33, 37, 41, 0.95) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    [data-bs-theme="dark"] .navbar h5,
+    [data-bs-theme="dark"] .navbar .nav-link {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Footer - STICK TO BOTTOM */
+    footer {
+      margin-top: auto;
+    }
+
+    [data-bs-theme="dark"] footer {
+      background-color: #212529 !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Mobile responsive */
+    @* @media
+    (max-width: 768px) {
+      #sidebar {
+        position: fixed;
+        margin-left: -260px;
+        height: 100vh;
+      }
+
+      #sidebar.show {
+        margin-left: 0;
+      }
+
+      #sidebar.collapsed {
+        width: 260px;
+        margin-left: -260px;
+      }
+
+      #sidebarToggle {
+        display: none !important;
+      }
+    } *@
+  </style>
+</head>
+
+<body>
+
+  <div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <nav class="text-white d-flex flex-column position-relative" id="sidebar">
+
+      <a class="sidebar-brand d-flex align-items-center text-decoration-none text-white border-bottom border-light border-opacity-25"
+        asp-controller="Home" asp-action="Index">
+        <i class="fas fa-laugh-wink me-2 fs-4"></i>
+        <span class="fw-bold">Dashboard</span>
+      </a>
+
+
+
+      <div class="flex-grow-1 overflow-auto py-3">
+        <ul class="nav flex-column">
+          @await RenderSectionAsync("Sidebar", false)
+        </ul>
+      </div>
+      <!-- Toggle Button Inside Sidebar -->
+      <button class="btn btn-light d-none d-md-flex" id="sidebarToggle" title="Thu gọn sidebar">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    </nav>
+    <!-- End Sidebar -->
+
+    <div class="flex-grow-1 d-flex flex-column" id="content">
+
+      <!-- Topbar -->
+      <nav class="navbar navbar-expand navbar-light bg-white shadow-sm">
+
+        <div class="container-fluid">
+
+          <button class="btn btn-link d-md-none text-dark" id="sidebarToggleTop">
+            <i class="fas fa-bars fs-5"></i>
+          </button>
+
+          <h5 class="mb-0 fw-semibold">@ViewData["Title"]</h5>
+
+          <ul class="navbar-nav ms-auto align-items-center">
+
+            <!-- Theme Toggle -->
+            <li class="nav-item">
+              <button class="btn btn-link nav-link" id="themeToggle" title="Chuyển đổi theme">
+                <i class="fas fa-moon fs-5" id="themeIcon"></i>
+              </button>
+            </li>
+
+            <!-- User Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="far fa-user-circle me-2 fs-5"></i>
+                <span class="d-none d-sm-inline">@UserManager.GetUserName(User)</span>
+              </a>
+
+              <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+
+                <li>
+                  <a class="dropdown-item py-2" asp-controller="Manage" asp-action="Index" asp-area="Identity">
+                    <i class="fas fa-user me-2 text-primary"></i>
+                    Hồ sơ
+                  </a>
+                </li>
+
+                <li>
+                  <hr class="dropdown-divider" />
+                </li>
+
+                <li>
+                  <form asp-area="Identity" asp-controller="Account" asp-action="LogOff" method="post">
+                    <button type="submit" class="dropdown-item py-2">
+                      <i class="fas fa-sign-out-alt me-2 text-danger"></i>
+                      Đăng xuất
+                    </button>
+                  </form>
+                </li>
+
+              </ul>
+            </li>
+          </ul>
+
+        </div>
+
+      </nav>
+      <!-- End Topbar -->
+
+      <main class="container-fluid p-4">
+        @RenderBody()
+      </main>
+
+      <footer class="bg-light text-center py-3 border-top">
+        <span class="text-muted small">© 2025 Raiden AppMvc .NetCore - Made with <i
+            class="fas fa-heart text-danger"></i></span>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Theme Toggle
+    const htmlElement = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    htmlElement.setAttribute('data-bs-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', function () {
+      const currentTheme = htmlElement.getAttribute('data-bs-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+      htmlElement.setAttribute('data-bs-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      themeIcon.className = theme === 'dark' ? 'fas fa-sun fs-5' : 'fas fa-moon fs-5';
+    }
+
+    // Sidebar Toggle (Desktop) - MINI SIDEBAR
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const toggleIcon = sidebarToggle.querySelector('i');
+
+    sidebarToggle.addEventListener('click', function () {
+      sidebar.classList.toggle('collapsed');
+
+      // Đổi icon và tooltip
+      if (sidebar.classList.contains('collapsed')) {
+        toggleIcon.className = 'fas fa-chevron-right';
+        sidebarToggle.title = 'Mở rộng sidebar';
+      } else {
+        toggleIcon.className = 'fas fa-chevron-left';
+        sidebarToggle.title = 'Thu gọn sidebar';
+      }
+
+      // Lưu trạng thái
+      localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+    });
+
+    // Load sidebar state
+    if (localStorage.getItem('sidebarCollapsed') === 'true') {
+      sidebar.classList.add('collapsed');
+      toggleIcon.className = 'fas fa-chevron-right';
+      sidebarToggle.title = 'Mở rộng sidebar';
+    }
+
+    // Sidebar Toggle (Mobile)
+    const sidebarToggleTop = document.getElementById('sidebarToggleTop');
+
+    sidebarToggleTop?.addEventListener('click', function () {
+      sidebar.classList.toggle('show');
+    });
+
+    // Đóng sidebar khi click bên ngoài (mobile)
+    document.addEventListener('click', function (e) {
+      if (window.innerWidth < 768) {
+        const isClickInsideSidebar = sidebar.contains(e.target);
+        const isClickOnToggle = sidebarToggleTop?.contains(e.target);
+
+        if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('show')) {
+          sidebar.classList.remove('show');
+        }
+      }
+    });
+  </script>
+
+  @await RenderSectionAsync("Scripts", false)
+</body>
+
+</html>

@@ -1,5 +1,9 @@
+@using App.Menu
+@inject AdminSidebarService _AdminSidebarService
+
 @{
   ViewData["Title"] = "Delete Database";
+  Layout = "/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -9,3 +13,12 @@
   <button type="submit" class="btn btn-danger">Xóa Database</button>
   <a asp-action="Index" class="btn btn-secondary">Hủy</a>
 </form>
+
+@{
+  _AdminSidebarService.SetActive("DbManage", "Index", "Database");
+}
+
+@section Sidebar
+{
+  @Html.Raw(_AdminSidebarService.renderHtml())
+}

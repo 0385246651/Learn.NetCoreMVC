@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <!-- có thể bật hiên warning những cái null ở đây (“Property này khai báo non-nullable (string, object...), nhưng constructor không gán giá trị → có thể null.”) -->
+    <!-- nếu gán giá trị mặc định thì sẽ ko bị coi là null -->
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 

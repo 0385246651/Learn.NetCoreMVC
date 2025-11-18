@@ -1,10 +1,12 @@
+@using App.Menu
 @using Microsoft.EntityFrameworkCore
 @using System.Data
-
+@inject AdminSidebarService _AdminSidebarService
 @inject AppDbContext dbContext
 
 @{
   ViewData["Title"] = "DB Info";
+  Layout = "/Views/Shared/_LayoutAdmin.cshtml";
   var connect = dbContext.Database.GetDbConnection();
   var canConnect = dbContext.Database.CanConnect();
 }
@@ -167,3 +169,12 @@
     </div>
   }
 </div>
+
+@{
+  _AdminSidebarService.SetActive("DbManage", "Index", "Database");
+}
+
+@section Sidebar
+{
+  @Html.Raw(_AdminSidebarService.renderHtml())
+}
